@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotifoy</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <div id="container">
+        <div id="filtros">
+            
+        </div>
+        <div id="portada">
+
+        </div>
+        <div id="informacion">
+            <div class="info-uno">
+                <div class="buscar-container">
+                    <input type="search" id="buscar" class="buscar" placeholder="Search">
+                    <span class="search-icon"><i class='fas'>&#xf002;</i></span>
+                </div>
+                <h3>Music</h3>
+            </div>
+            <div class="info-dos">
+                <img src="images/avatar_b.png" class="avatar">
+                <h3>Felix</h3>
+                <input type="button" id="btn-pause" class="btn-pause" value="Pause">
+                <button id="add" class="add"><i class='fas'>&#xf24d;</i></button>
+            </div>
+        </div>
+        <div id="lista">
+            <table id="tabla" class="tabla">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td>Titulo</td>
+                        <td>Artista</td>
+                        <td>Duracion</td>
+                        <td>Favorito</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><button class="play"><i class="fas fa-play"></i></button></td>
+                        <td>Guns for hire</td>
+                        <td>Woodkid</td>
+                        <td>3:53</td>
+                        <td><button class="fav"><i class='far'>&#xf004;</i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="barra">
+            <div class="selector">
+                <button><i class="fas fa-undo"></i></button>
+                <button><i class="fas fa-step-backward"></i></button>
+                <button><i class="fas fa-play"></i></button>
+                <button><i class="fas fa-step-forward"></i></button> 
+                <button><i class="fas fa-random"></i></button>
+            </div>
+            <div class="selector-dos">
+                <div class="cancion">
+                    <p>Cancion actual</p>
+                    <p>Artista</p>
+                </div>
+                <div class="volume">
+                    <button><i class='fas'>&#xf027;</i></button>
+                    <input type="range" class="barra-volume">
+                </div>
+            </div>
+            <div class="progress">
+                <span class="tiempo">0:00</span>
+                <progress max="100" class="barra-progreso"></progress>
+                <span class="tiempo">3:53</span>
+            </div>
+        </div>
+    </div>
+    <div id="form-container" tabindex="0" focuseable="true">
+        <form id="formulario">
+            <button id="btn-cerrar" class="cerrar"><i class='fas'>&#xf00d;</i></button>
+            <h2>Añadir una nueva cancion</h2>
+            <input type="file" id="inputCancion">
+            <h2>Titulo</h2>
+            <input type="text" id="inputTitulo">
+            <h2>Autor</h2>
+            <input type="text" id="inputAutor">
+            <h2>Imagen de portada</h2>
+            <input type="file" id="inputImagen">
+            <button class="subir">Subir</button>
+        </form>
+    </div>
+</body>
+
+</html>
