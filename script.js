@@ -50,10 +50,58 @@ async function getCanciones() {
         }
         const data = await response.json();
         console.log(data);
+        crearLista(data);
+
     } catch (error) {
         console.error("Error");
     }
 
+
+
+}
+
+//Funcion que rellena la lista de canciones de manera dinamica
+function crearLista(data) {
+
+    data.forEach(element => {
+        const cancion = new Audio(element.filepath);
+        let tbody = document.getElementById("tbody");
+        let tr = document.createElement("tr");
+        let tdPlay = document.createElement("td");
+        let botonPlay = document.createElement("button");
+        botonPlay.setAttribute("class", "play");
+        let icon = document.createElement("i");
+        icon.setAttribute("class", "fas fa-play");
+        botonPlay.append(icon);
+        let tdTitulo = document.createElement("td");
+        let tdArtista = document.createElement("td");
+        let tdDuracion = document.createElement("td");
+        let tdFavorito = document.createElement("td");
+        let botonFav = document.createElement("button");
+        botonFav.setAttribute("class", "fav");
+        let i = document.createElement("i");
+        i.setAttribute("class", "far fa-heart");
+        botonFav.append(i);
+
+        tdPlay.append(botonPlay);
+        tdTitulo.textContent = element.title;
+        tdArtista.textContent = element.artist;
+        //Se utiliza onloadmetadata para mostrar la duracion una vez que se
+        //han cargado los archivos
+        cancion.onloadedmetadata = () => {
+            let duracion = cancion.duration;
+            //Transformamos la duracion en minutos y segundos
+            let minutos = Math.floor(duracion / 60);
+            let segundos = Math.round(duracion % 60);
+            //Mostramos la duracion formateada
+            tdDuracion.textContent = `${minutos}:${segundos < 10 ? '0' : ''}${segundos}`;
+        }
+        tdFavorito.append(botonFav);
+
+        tr.append(tdPlay, tdTitulo, tdArtista, tdDuracion, tdFavorito);
+        tbody.append(tr);
+
+    });
 }
 
 document.getElementById("subir").addEventListener("click", postCancion);

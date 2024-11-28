@@ -53,6 +53,7 @@ body {
     grid-area: lista;
     background-color: #1F1F1F;
     color: white;
+    overflow: auto;
 }
 
 #portada {
