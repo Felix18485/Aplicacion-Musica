@@ -36,7 +36,8 @@ async function postCancion() {
             throw new Error("Error en la solicitud: " + response.statusText);
         }
         console.log("exito");
-
+        //Ocultamos el formulario al subir un archivo
+        document.getElementById("form-container").style.display = "none";
     } catch (error) {
         console.error(error);
     }
@@ -60,11 +61,17 @@ async function getCanciones() {
 
 }
 
+//Array que almacena todas las canciones
+let canciones = [];
+
 //Funcion que rellena la lista de canciones de manera dinamica
 function crearLista(data) {
 
     data.forEach(element => {
+        //Creamos un objeto audio por cada cancion que venga de la api
         const cancion = new Audio(element.filepath);
+        //Metemos cada cancion en el array de canciones
+        canciones.push(cancion);
         let tbody = document.getElementById("tbody");
         let tr = document.createElement("tr");
         let tdPlay = document.createElement("td");
@@ -73,6 +80,23 @@ function crearLista(data) {
         let icon = document.createElement("i");
         icon.setAttribute("class", "fas fa-play");
         botonPlay.append(icon);
+        //Añadimos un evento a cada uno de los botones play de la lista
+        botonPlay.addEventListener("click", () => {
+
+            //Cuando pulsemos el play recorremos todas las canciones y las pausamos
+            for (let indice = 0; indice < canciones.length; indice++) {
+                canciones[indice].pause();
+                canciones[indice].currentTime = 0;
+            }
+            //Despues de pausarlas reproducimos la cancion elegida
+            cancion.play();
+            //Cambiamos el icono de la barra de reproduccion y ponemos la imagen de portada
+            document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
+            document.getElementById("portada").innerHTML = "";
+            let portada = document.createElement("img");
+            portada.src = element.cover;
+            document.getElementById("portada").append(portada);
+        })
         let tdTitulo = document.createElement("td");
         let tdArtista = document.createElement("td");
         let tdDuracion = document.createElement("td");
@@ -103,6 +127,63 @@ function crearLista(data) {
 
     });
 }
+document.getElementById("btnPlay").addEventListener("click", () => {
+    let cancion;
+    //Recorremos todas las canciones
+    for (let indice = 0; indice < canciones.length; indice++) {
+        //Si el currentTime es > 0 implica que la cancion se esta reproduciendo
+        if (canciones[indice].currentTime > 0) {
+            cancion = canciones[indice];
+        }
+    }
+    //Si la cancion estaba pausada la reproducimos y cambiamos el icono y viceversa
+    if (cancion.paused) {
+        cancion.play()
+        document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
+    } else {
+        cancion.pause();
+        document.getElementById("icon-play").setAttribute("class", "fas fa-play");
+    }
+})
 
+//Obtenemos la imagen de portada comparando las canciones
+async function obtenerImagen(src) {
+    try {
+        const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
+        if (!response.ok) {
+            throw new Error("Error en la solicitud: " + response.statusText);
+        }
+        const data = await response.json();
+        console.log(data);
+        data.forEach(element => {
+            if (element.filepath == src) {
+                return element.cover;
+            }
+        });
+    } catch (error) {
+        console.error("Error");
+    }
+}
+
+//FUNCION EN PROGRESO
+document.getElementById("btnNext").addEventListener("click", () => {
+    let cancion;
+    for (let indice = 0; indice < canciones.length; indice++) {
+        //Si el currentTime es > 0 implica que la cancion se esta reproduciendo
+        if (canciones[indice].currentTime > 0) {
+            canciones[indice].pause();
+            canciones[indice].currentTime = 0;
+            cancion = canciones[indice + 1];
+        }
+    }
+    console.log(cancion);
+    cancion.play();
+    debugger;
+    document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
+    document.getElementById("portada").innerHTML = "";
+    let portada = document.createElement("img");
+    portada.src = obtenerImagen(cancion.src);;
+    document.getElementById("portada").append(portada);
+})
 document.getElementById("subir").addEventListener("click", postCancion);
 getCanciones();

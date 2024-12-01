@@ -22,7 +22,11 @@ body {
 
 
 
-#filtros, #informacion, #lista, #portada, #barra {
+#filtros,
+#informacion,
+#lista,
+#portada,
+#barra {
     border: 1px solid #2c2c2c;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 1.4);
 
@@ -60,6 +64,12 @@ body {
     grid-area: portada;
     background-color: #1F1F1F;
     color: white;
+    text-align: center;
+}
+
+#portada img {
+    width: 300px;
+    height: 300px;
 }
 
 #barra {
@@ -239,7 +249,7 @@ body {
     width: 500px;
 }
 
-.cerrar{
+.cerrar {
     position: absolute;
     left: 10px;
     font-size: 24px;
