@@ -63,6 +63,8 @@ async function getCanciones() {
 
 //Array que almacena todas las canciones
 let canciones = [];
+//Cancion que se esta reproduciendo
+let cancionActual;
 
 //Funcion que rellena la lista de canciones de manera dinamica
 function crearLista(data) {
@@ -83,19 +85,25 @@ function crearLista(data) {
         //Añadimos un evento a cada uno de los botones play de la lista
         botonPlay.addEventListener("click", () => {
 
-            //Cuando pulsemos el play recorremos todas las canciones y las pausamos
+            //Cuando pulsemos el play recorremos todas las canciones y las paramos
             for (let indice = 0; indice < canciones.length; indice++) {
                 canciones[indice].pause();
                 canciones[indice].currentTime = 0;
             }
-            //Despues de pausarlas reproducimos la cancion elegida
+            //Despues de pararlas reproducimos la cancion elegida
             cancion.play();
+            //Guardamos la cancion que se esta reproduciendo 
+            cancionActual = cancion;
             //Cambiamos el icono de la barra de reproduccion y ponemos la imagen de portada
             document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
             document.getElementById("portada").innerHTML = "";
             let portada = document.createElement("img");
             portada.src = element.cover;
             document.getElementById("portada").append(portada);
+            artistaActual = element.artist;
+            tituloActual = element.title;
+            document.getElementById("cancionActual").textContent = element.title;
+            document.getElementById("artistaActual").textContent = element.artist;
         })
         let tdTitulo = document.createElement("td");
         let tdArtista = document.createElement("td");
@@ -128,20 +136,13 @@ function crearLista(data) {
     });
 }
 document.getElementById("btnPlay").addEventListener("click", () => {
-    let cancion;
-    //Recorremos todas las canciones
-    for (let indice = 0; indice < canciones.length; indice++) {
-        //Si el currentTime es > 0 implica que la cancion se esta reproduciendo
-        if (canciones[indice].currentTime > 0) {
-            cancion = canciones[indice];
-        }
-    }
+
     //Si la cancion estaba pausada la reproducimos y cambiamos el icono y viceversa
-    if (cancion.paused) {
-        cancion.play()
+    if (cancionActual.paused) {
+        cancionActual.play()
         document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
     } else {
-        cancion.pause();
+        cancionActual.pause();
         document.getElementById("icon-play").setAttribute("class", "fas fa-play");
     }
 })
@@ -155,35 +156,59 @@ async function obtenerImagen(src) {
         }
         const data = await response.json();
         console.log(data);
-        data.forEach(element => {
-            if (element.filepath == src) {
-                return element.cover;
-            }
-        });
+        //Buscamos la cancion que coincida con el src de la cancion actual
+        const song = data.find(element => element.filepath === src);
+        if (song) {
+            return song.cover;
+        }
     } catch (error) {
         console.error("Error");
     }
 }
 
-//FUNCION EN PROGRESO
-document.getElementById("btnNext").addEventListener("click", () => {
-    let cancion;
+//Funcion que para la cancion que se esta reproduciendo y reproduce la siguiente en el array
+//Esta funcion tiene que ser asincrona porque llamamos a obtener imagen que tambien es asincrona
+document.getElementById("btnNext").addEventListener("click", async () => {
     for (let indice = 0; indice < canciones.length; indice++) {
         //Si el currentTime es > 0 implica que la cancion se esta reproduciendo
         if (canciones[indice].currentTime > 0) {
             canciones[indice].pause();
             canciones[indice].currentTime = 0;
-            cancion = canciones[indice + 1];
+            cancionActual = canciones[indice + 1];
         }
     }
-    console.log(cancion);
-    cancion.play();
-    debugger;
+
+    cancionActual.play();
     document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
     document.getElementById("portada").innerHTML = "";
     let portada = document.createElement("img");
-    portada.src = obtenerImagen(cancion.src);;
+    //Ponemos await porque al ser una funcion asincrona tenemos que esperar a que encuentre la imagen
+    const cover = await obtenerImagen(cancionActual.src)
+    portada.src = cover;
     document.getElementById("portada").append(portada);
 })
+
+document.getElementById("btnPrev").addEventListener("click", async () => {
+    for (let indice = 0; indice < canciones.length; indice++) {
+        //Si el currentTime es > 0 implica que la cancion se esta reproduciendo
+        if (canciones[indice].currentTime > 0) {
+            canciones[indice].pause();
+            canciones[indice].currentTime = 0;
+            cancionActual = canciones[indice - 1];
+        }
+    }
+    cancionActual.play();
+    document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
+    document.getElementById("portada").innerHTML = "";
+    let portada = document.createElement("img");
+    //Ponemos await porque al ser una funcion asincrona tenemos que esperar a que encuentre la imagen
+    const cover = await obtenerImagen(cancionActual.src)
+    portada.src = cover;
+    document.getElementById("portada").append(portada);
+})
+
+
+
+
 document.getElementById("subir").addEventListener("click", postCancion);
 getCanciones();
