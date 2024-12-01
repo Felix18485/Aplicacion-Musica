@@ -56,9 +56,27 @@ async function getCanciones() {
     } catch (error) {
         console.error("Error");
     }
+}
 
+function formatearTiempo(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' + secs : secs}`;
+}
 
-
+//Funcion que añade el evento ontimeupdate
+function addOnTime() {
+    //ontimeupdate es un evento que se ejecuta cada vez que cambia el tiempo actual de la cancion
+    cancionActual.ontimeupdate = () => {
+        //Obtenemos el tiempo actual de la cancion y su duracion
+        const currentTime = cancionActual.currentTime;
+        const duracion = cancionActual.duration;
+        //Multiplicamos por 100 para que nos de un valor entero entre 1 y 100 es decir
+        //que si el tiempo actual es 0.5 por 100 seria 50
+        document.getElementById("barraProgreso").value = (currentTime / duracion) * 100;
+        document.getElementById("tiempo").textContent = formatearTiempo(currentTime);
+        document.getElementById("duracion").textContent = formatearTiempo(duracion);
+    }
 }
 
 //Array que almacena todas las canciones
@@ -94,6 +112,8 @@ function crearLista(data) {
             cancion.play();
             //Guardamos la cancion que se esta reproduciendo 
             cancionActual = cancion;
+            //Ponemos el mismo volumen que esta seleccionado la barra de volumen
+            cancionActual.volume = document.getElementById("barraVolumen").value;
             //Cambiamos el icono de la barra de reproduccion y ponemos la imagen de portada
             document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
             document.getElementById("portada").innerHTML = "";
@@ -104,6 +124,8 @@ function crearLista(data) {
             tituloActual = element.title;
             document.getElementById("cancionActual").textContent = element.title;
             document.getElementById("artistaActual").textContent = element.artist;
+            //Añadimos el evento para la barra de progreso y el tiempo
+            addOnTime();
         })
         let tdTitulo = document.createElement("td");
         let tdArtista = document.createElement("td");
@@ -216,6 +238,8 @@ document.getElementById("btnNext").addEventListener("click", async () => {
         }
     }
 
+    //Añadimos el evento para la barra de progreso y el tiempo
+    addOnTime();
     cancionActual.play();
     document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
     document.getElementById("portada").innerHTML = "";
@@ -239,6 +263,9 @@ document.getElementById("btnPrev").addEventListener("click", async () => {
             cancionActual = canciones[indice - 1];
         }
     }
+
+    //Añadimos el evento para la barra de progreso y el tiempo
+    addOnTime();
     cancionActual.play();
     document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
     document.getElementById("portada").innerHTML = "";
@@ -258,6 +285,39 @@ document.getElementById("barraVolumen").addEventListener("input", () => {
     //Los valores del volumen van desde 0 a 1
     //Ponemos el valor que tiene el tipo range
     cancionActual.volume = event.target.value;
+    if (cancionActual.volume === 0) {
+        document.getElementById("muteIcon").setAttribute("class", "fas fa-volume-mute");
+    } else if (cancionActual.volume > 0) {
+        document.getElementById("muteIcon").setAttribute("class", "fas fa-volume-down");
+    }
+})
+
+//Evento que mutea la cancion
+document.getElementById("btnMute").addEventListener("click", () => {
+    if (cancionActual.muted) {
+        cancionActual.muted = false;
+        document.getElementById("muteIcon").setAttribute("class", "fas fa-volume-down");
+    } else {
+        cancionActual.muted = true;
+        document.getElementById("muteIcon").setAttribute("class", "fas fa-volume-mute");
+    }
+})
+
+//Evento que pone la cancion en bucle
+document.getElementById("btnLoop").addEventListener("click", () => {
+    if (cancionActual.loop) {
+        cancionActual.loop = false;
+        event.target.style.color = "white";
+    } else {
+        cancionActual.loop = true;
+        event.target.style.color = "#1DB954";
+    }
+})
+
+//FUNCION EN PROGRESO
+document.getElementById("btnRandom").addEventListener("click", () => {
+    //Saca un numero aleatorio entre 0 y la cantidad de canciones
+    let numeroAleatorio = Math.floor(Math.random() * canciones.length);
 })
 
 

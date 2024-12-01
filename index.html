@@ -51,11 +51,11 @@
         </div>
         <div id="barra">
             <div class="selector">
-                <button><i class="fas fa-undo"></i></button>
+                <button id="btnLoop"><i class="fas fa-undo"></i></button>
                 <button id="btnPrev"><i class="fas fa-step-backward"></i></button>
                 <button id="btnPlay"><i id="icon-play" class="fas fa-play"></i></button>
                 <button id="btnNext"><i class="fas fa-step-forward"></i></button> 
-                <button><i class="fas fa-random"></i></button>
+                <button id="btnRandom"><i class="fas fa-random"></i></button>
             </div>
             <div class="selector-dos">
                 <div class="cancion">
@@ -63,14 +63,14 @@
                     <p id="artistaActual">Artista</p>
                 </div>
                 <div class="volume">
-                    <button><i class='fas'>&#xf027;</i></button>
+                    <button id="btnMute"><i id="muteIcon" class='fas fa-volume-down'></i></button>
                     <input type="range" id="barraVolumen" min="0" max="1" step="0.1" class="barra-volume">
                 </div>
             </div>
             <div class="progress">
-                <span class="tiempo">0:00</span>
-                <progress max="100" class="barra-progreso"></progress>
-                <span class="tiempo">3:53</span>
+                <p id="tiempo" class="tiempo"></p>
+                <progress id="barraProgreso" value="0" max="100" class="barra-progreso"></progress>
+                <p id="duracion" class="tiempo"></p>
             </div>
         </div>
     </div>
