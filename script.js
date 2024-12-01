@@ -253,7 +253,12 @@ document.getElementById("btnPrev").addEventListener("click", async () => {
     document.getElementById("artistaActual").textContent = artist;
 })
 
-
+//Evento que sube o baja el volumen
+document.getElementById("barraVolumen").addEventListener("input", () => {
+    //Los valores del volumen van desde 0 a 1
+    //Ponemos el valor que tiene el tipo range
+    cancionActual.volume = event.target.value;
+})
 
 
 document.getElementById("subir").addEventListener("click", postCancion);
