@@ -166,6 +166,44 @@ async function obtenerImagen(src) {
     }
 }
 
+//Obtenemos el titulo de la cancion comparando las canciones
+async function obtenerTitulo(src) {
+    try {
+        const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
+        if (!response.ok) {
+            throw new Error("Error en la solicitud: " + response.statusText);
+        }
+        const data = await response.json();
+        console.log(data);
+        //Buscamos la cancion que coincida con el src de la cancion actual
+        const song = data.find(element => element.filepath === src);
+        if (song) {
+            return song.title;
+        }
+    } catch (error) {
+        console.error("Error");
+    }
+}
+
+//Obtenemos el artista de la cancion comparando las canciones
+async function obtenerArtista(src) {
+    try {
+        const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
+        if (!response.ok) {
+            throw new Error("Error en la solicitud: " + response.statusText);
+        }
+        const data = await response.json();
+        console.log(data);
+        //Buscamos la cancion que coincida con el src de la cancion actual
+        const song = data.find(element => element.filepath === src);
+        if (song) {
+            return song.artist;
+        }
+    } catch (error) {
+        console.error("Error");
+    }
+}
+
 //Funcion que para la cancion que se esta reproduciendo y reproduce la siguiente en el array
 //Esta funcion tiene que ser asincrona porque llamamos a obtener imagen que tambien es asincrona
 document.getElementById("btnNext").addEventListener("click", async () => {
@@ -182,10 +220,14 @@ document.getElementById("btnNext").addEventListener("click", async () => {
     document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
     document.getElementById("portada").innerHTML = "";
     let portada = document.createElement("img");
-    //Ponemos await porque al ser una funcion asincrona tenemos que esperar a que encuentre la imagen
+    //Ponemos await porque es una funcion asincrona
     const cover = await obtenerImagen(cancionActual.src)
+    const title = await obtenerTitulo(cancionActual.src);
+    const artist = await obtenerArtista(cancionActual.src);
     portada.src = cover;
     document.getElementById("portada").append(portada);
+    document.getElementById("cancionActual").textContent = title;
+    document.getElementById("artistaActual").textContent = artist;
 })
 
 document.getElementById("btnPrev").addEventListener("click", async () => {
@@ -201,10 +243,14 @@ document.getElementById("btnPrev").addEventListener("click", async () => {
     document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
     document.getElementById("portada").innerHTML = "";
     let portada = document.createElement("img");
-    //Ponemos await porque al ser una funcion asincrona tenemos que esperar a que encuentre la imagen
+    //Ponemos await porque es una funcion asincrona
     const cover = await obtenerImagen(cancionActual.src)
+    const title = await obtenerTitulo(cancionActual.src);
+    const artist = await obtenerArtista(cancionActual.src);
     portada.src = cover;
     document.getElementById("portada").append(portada);
+    document.getElementById("cancionActual").textContent = title;
+    document.getElementById("artistaActual").textContent = artist;
 })
 
 
