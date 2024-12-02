@@ -103,12 +103,18 @@ async function actualizarBarra() {
 function saltarCancion() {
     //El evento onended se dispara cada vez que acaba una cancion
     cancionActual.onended = () => {
-        let indice = canciones.findIndex(cancion => cancion === cancionActual);
-        if (indice < canciones.length - 1) {
-            cancionActual = canciones[indice + 1];
-            cancionActual.play();
-        } else if (indice === canciones.length - 1) {
-            cancionActual = canciones[0];
+        if (aleatorio === false) {
+            let indice = canciones.findIndex(cancion => cancion === cancionActual);
+            if (indice < canciones.length - 1) {
+                cancionActual = canciones[indice + 1];
+                cancionActual.play();
+            } else if (indice === canciones.length - 1) {
+                cancionActual = canciones[0];
+                cancionActual.play();
+            }
+        } else {
+            let numeroAleatorio = Math.floor(Math.random() * canciones.length - 1);
+            cancionActual = canciones[numeroAleatorio];
             cancionActual.play();
         }
         addOnTime();
@@ -120,6 +126,8 @@ function saltarCancion() {
 let canciones = [];
 //Cancion que se esta reproduciendo
 let cancionActual;
+//Variable que determina si el modo aleatorio esta activo o no
+let aleatorio = false;
 
 //Funcion que rellena la lista de canciones de manera dinamica
 function crearLista(data) {
@@ -267,15 +275,34 @@ async function obtenerArtista(src) {
 //Funcion que para la cancion que se esta reproduciendo y reproduce la siguiente en el array
 //Esta funcion tiene que ser asincrona porque llamamos a obtener imagen que tambien es asincrona
 document.getElementById("btnNext").addEventListener("click", async () => {
-    for (let indice = 0; indice < canciones.length; indice++) {
-        //Si el currentTime es > 0 implica que la cancion se esta reproduciendo
-        if (canciones[indice].currentTime > 0) {
-            canciones[indice].pause();
-            canciones[indice].currentTime = 0;
-            cancionActual = canciones[indice + 1];
+    //Si el modo aleatorio esta activado paramos la cancion actual y reproducimos una aleatoria
+    if (aleatorio === false) {
+        for (let indice = 0; indice < canciones.length; indice++) {
+            //Si el currentTime es > 0 implica que la cancion se esta reproduciendo asi que la paramos
+            //y reproducimos la siguiente
+            if (canciones[indice].currentTime > 0) {
+                canciones[indice].pause();
+                canciones[indice].currentTime = 0;
+                cancionActual = canciones[indice + 1];
+            }
+        }
+        //Si la cancion actual es undefined implica que has querido saltar la ultima cancion
+        //en ese caso reproducimos la primera
+        if (cancionActual === undefined) {
+            cancionActual = canciones[0];
+        }
+    } else {
+        let numeroAleatorio = Math.floor(Math.random() * canciones.length - 1);
+        for (let indice = 0; indice < canciones.length; indice++) {
+            //Si el currentTime es > 0 implica que la cancion se esta reproduciendo asi que la paramos
+            //y reproducimos una aleatoria
+            if (canciones[indice].currentTime > 0) {
+                canciones[indice].pause();
+                canciones[indice].currentTime = 0;
+                cancionActual = canciones[numeroAleatorio];
+            }
         }
     }
-
     //Añadimos el evento para la barra de progreso y el tiempo
     addOnTime();
     cancionActual.play();
@@ -283,15 +310,33 @@ document.getElementById("btnNext").addEventListener("click", async () => {
 })
 
 document.getElementById("btnPrev").addEventListener("click", async () => {
-    for (let indice = 0; indice < canciones.length; indice++) {
-        //Si el currentTime es > 0 implica que la cancion se esta reproduciendo
-        if (canciones[indice].currentTime > 0) {
-            canciones[indice].pause();
-            canciones[indice].currentTime = 0;
-            cancionActual = canciones[indice - 1];
+    if (aleatorio === false) {
+        for (let indice = 0; indice < canciones.length; indice++) {
+            //Si el currentTime es > 0 implica que la cancion se esta reproduciendo asi que la paramos
+            //y reproducimos la anterior
+            if (canciones[indice].currentTime > 0) {
+                canciones[indice].pause();
+                canciones[indice].currentTime = 0;
+                cancionActual = canciones[indice - 1];
+            }
+        }
+        //Si la cancion actual es undefined implica que has querido saltar la ultima cancion
+        //en ese caso reproducimos la ultima
+        if (cancionActual === undefined) {
+            cancionActual = canciones[canciones.length - 1];
+        }
+    } else {
+        let numeroAleatorio = Math.floor(Math.random() * canciones.length - 1);
+        for (let indice = 0; indice < canciones.length; indice++) {
+            //Si el currentTime es > 0 implica que la cancion se esta reproduciendo asi que la paramos
+            //y reproducimos una aleatoria
+            if (canciones[indice].currentTime > 0) {
+                canciones[indice].pause();
+                canciones[indice].currentTime = 0;
+                cancionActual = canciones[numeroAleatorio];
+            }
         }
     }
-
     //Añadimos el evento para la barra de progreso y el tiempo
     addOnTime();
     cancionActual.play();
@@ -335,14 +380,13 @@ document.getElementById("btnLoop").addEventListener("click", () => {
 //FUNCION EN PROGRESO
 document.getElementById("btnRandom").addEventListener("click", () => {
     //Saca un numero aleatorio entre 0 y la cantidad de canciones
-    let numeroAleatorio = Math.floor(Math.random() * canciones.length - 1);
-    let activo;
-    if (activo === undefined || activo === false) {
-        activo = true;
+    if (aleatorio === false) {
+        aleatorio = true;
+        event.target.style.color = "#1DB954";
     } else {
-        activo = false;
+        aleatorio = false;
+        event.target.style.color = "white";
     }
-    return activo;
 })
 
 document.getElementById("subir").addEventListener("click", postCancion);
