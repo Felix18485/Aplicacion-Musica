@@ -76,6 +76,56 @@ function addOnTime() {
         document.getElementById("barraProgreso").value = (currentTime / duracion) * 100;
         document.getElementById("tiempo").textContent = formatearTiempo(currentTime);
         document.getElementById("duracion").textContent = formatearTiempo(duracion);
+        if(cancionActual.ended){
+            saltarCancion();
+        }
+    }
+}
+
+//Funcion que actualiza la barra de tiempo, portada, artista y cancion
+async function actualizarBarra() {
+    document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
+    document.getElementById("portada").innerHTML = "";
+    let portada = document.createElement("img");
+    //Ponemos await porque es una funcion asincrona
+    const cover = await obtenerImagen(cancionActual.src)
+    const title = await obtenerTitulo(cancionActual.src);
+    const artist = await obtenerArtista(cancionActual.src);
+    portada.src = cover;
+    document.getElementById("portada").append(portada);
+    document.getElementById("cancionActual").textContent = title;
+    document.getElementById("artistaActual").textContent = artist;
+    cancionActual.volume = document.getElementById("barraVolumen").value;
+}
+
+//FUNCION EN PROGRESO
+function saltarCancion() {
+    cancionActual.onended = () => {
+        let indice = canciones.findIndex(cancion => cancion === cancionActual);
+        if (indice < canciones.length - 1) {
+            cancionActual = canciones[indice + 1];
+            cancionActual.play();
+        } else if (indice === canciones.length - 1) {
+            cancionActual = canciones[0];
+            cancionActual.play();
+        }
+        addOnTime();
+        actualizarBarra();
+    }
+}
+
+function cargarOnEnded(cancion){
+    cancionActual.onended = () => {
+        let indice = canciones.findIndex(cancion => cancion === cancionActual);
+        if (indice < canciones.length - 1) {
+            cancionActual = canciones[indice + 1];
+            cancionActual.play();
+        } else if (indice === canciones.length - 1) {
+            cancionActual = canciones[0];
+            cancionActual.play();
+        }
+        addOnTime();
+        actualizarBarra();
     }
 }
 
@@ -102,7 +152,6 @@ function crearLista(data) {
         botonPlay.append(icon);
         //Añadimos un evento a cada uno de los botones play de la lista
         botonPlay.addEventListener("click", () => {
-
             //Cuando pulsemos el play recorremos todas las canciones y las paramos
             for (let indice = 0; indice < canciones.length; indice++) {
                 canciones[indice].pause();
@@ -126,6 +175,11 @@ function crearLista(data) {
             document.getElementById("artistaActual").textContent = element.artist;
             //Añadimos el evento para la barra de progreso y el tiempo
             addOnTime();
+
+
+
+            //PROBANDO FUNCION
+            saltarCancion();
         })
         let tdTitulo = document.createElement("td");
         let tdArtista = document.createElement("td");
@@ -241,17 +295,7 @@ document.getElementById("btnNext").addEventListener("click", async () => {
     //Añadimos el evento para la barra de progreso y el tiempo
     addOnTime();
     cancionActual.play();
-    document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
-    document.getElementById("portada").innerHTML = "";
-    let portada = document.createElement("img");
-    //Ponemos await porque es una funcion asincrona
-    const cover = await obtenerImagen(cancionActual.src)
-    const title = await obtenerTitulo(cancionActual.src);
-    const artist = await obtenerArtista(cancionActual.src);
-    portada.src = cover;
-    document.getElementById("portada").append(portada);
-    document.getElementById("cancionActual").textContent = title;
-    document.getElementById("artistaActual").textContent = artist;
+    actualizarBarra();
 })
 
 document.getElementById("btnPrev").addEventListener("click", async () => {
@@ -267,17 +311,7 @@ document.getElementById("btnPrev").addEventListener("click", async () => {
     //Añadimos el evento para la barra de progreso y el tiempo
     addOnTime();
     cancionActual.play();
-    document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
-    document.getElementById("portada").innerHTML = "";
-    let portada = document.createElement("img");
-    //Ponemos await porque es una funcion asincrona
-    const cover = await obtenerImagen(cancionActual.src)
-    const title = await obtenerTitulo(cancionActual.src);
-    const artist = await obtenerArtista(cancionActual.src);
-    portada.src = cover;
-    document.getElementById("portada").append(portada);
-    document.getElementById("cancionActual").textContent = title;
-    document.getElementById("artistaActual").textContent = artist;
+    actualizarBarra();
 })
 
 //Evento que sube o baja el volumen
@@ -320,6 +354,6 @@ document.getElementById("btnRandom").addEventListener("click", () => {
     let numeroAleatorio = Math.floor(Math.random() * canciones.length);
 })
 
-
 document.getElementById("subir").addEventListener("click", postCancion);
 getCanciones();
+
