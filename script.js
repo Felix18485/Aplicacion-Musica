@@ -76,7 +76,8 @@ function addOnTime() {
         document.getElementById("barraProgreso").value = (currentTime / duracion) * 100;
         document.getElementById("tiempo").textContent = formatearTiempo(currentTime);
         document.getElementById("duracion").textContent = formatearTiempo(duracion);
-        if(cancionActual.ended){
+        //En el caso de que la cancion haya acabado pasamos a la siguiente cancion
+        if (cancionActual.ended) {
             saltarCancion();
         }
     }
@@ -98,23 +99,9 @@ async function actualizarBarra() {
     cancionActual.volume = document.getElementById("barraVolumen").value;
 }
 
-//FUNCION EN PROGRESO
+//Funcion que añade el evento onended a la cancion actual
 function saltarCancion() {
-    cancionActual.onended = () => {
-        let indice = canciones.findIndex(cancion => cancion === cancionActual);
-        if (indice < canciones.length - 1) {
-            cancionActual = canciones[indice + 1];
-            cancionActual.play();
-        } else if (indice === canciones.length - 1) {
-            cancionActual = canciones[0];
-            cancionActual.play();
-        }
-        addOnTime();
-        actualizarBarra();
-    }
-}
-
-function cargarOnEnded(cancion){
+    //El evento onended se dispara cada vez que acaba una cancion
     cancionActual.onended = () => {
         let indice = canciones.findIndex(cancion => cancion === cancionActual);
         if (indice < canciones.length - 1) {
@@ -175,10 +162,7 @@ function crearLista(data) {
             document.getElementById("artistaActual").textContent = element.artist;
             //Añadimos el evento para la barra de progreso y el tiempo
             addOnTime();
-
-
-
-            //PROBANDO FUNCION
+            //Añadimos el evento para saltar la cancion
             saltarCancion();
         })
         let tdTitulo = document.createElement("td");
@@ -351,7 +335,14 @@ document.getElementById("btnLoop").addEventListener("click", () => {
 //FUNCION EN PROGRESO
 document.getElementById("btnRandom").addEventListener("click", () => {
     //Saca un numero aleatorio entre 0 y la cantidad de canciones
-    let numeroAleatorio = Math.floor(Math.random() * canciones.length);
+    let numeroAleatorio = Math.floor(Math.random() * canciones.length - 1);
+    let activo;
+    if (activo === undefined || activo === false) {
+        activo = true;
+    } else {
+        activo = false;
+    }
+    return activo;
 })
 
 document.getElementById("subir").addEventListener("click", postCancion);
