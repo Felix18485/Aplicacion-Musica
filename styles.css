@@ -208,10 +208,23 @@ body {
 }
 
 .barra-progreso {
+    appearance: none;
+    overflow: hidden;
     height: 8px;
     background-color: #404040;
     border-radius: 4px;
     overflow: hidden;
+    cursor: pointer;
+    width: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.barra-progreso::-webkit-slider-thumb{
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: lightgray;
+    border-radius: 50%;
     cursor: pointer;
 }
 

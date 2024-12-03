@@ -485,6 +485,12 @@ document.getElementById("btn-pause").addEventListener("click", () => {
         event.target.value = "Pause";
     }
 })
+
+document.getElementById("barraProgreso").addEventListener("input", (event) => {
+    let valorInput = parseFloat(event.target.value);
+    cancionActual.currentTime = (valorInput / 100) * cancionActual.duration;
+})
+
 document.getElementById("btnFavoritos").addEventListener("click", crearListaFavoritos);
 document.getElementById("btnTodos").addEventListener("click", getCanciones);
 document.getElementById("subir").addEventListener("click", postCancion);
