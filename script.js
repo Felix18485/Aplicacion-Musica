@@ -201,7 +201,7 @@ function addFavoritos(src) {
         favoritos.push(src);
         localStorage.setItem("canciones", JSON.stringify(favoritos));
         favorito = true;
-    }else{
+    } else {
         //Buscamos el indice que tiene la cancion en la lista
         let indice = favoritos.findIndex(cancion => cancion === src);
         //Elminimaos la cancion del array
@@ -213,7 +213,7 @@ function addFavoritos(src) {
 }
 
 //Funcion que recupera la lista de favoritos de localStorage y lo guarda en un array
-async function crearListaFavoritos(){
+async function crearListaFavoritos() {
     //Recuperamos la lista de canciones de localStorage
     let favoritos = JSON.parse(localStorage.getItem('canciones'));
     //Array que almacenara las canciones favoritas
@@ -225,7 +225,7 @@ async function crearListaFavoritos(){
         }
         const data = await response.json();
         //Recorremos la lista de favoritos del localStorage
-        for(let indice = 0; indice < favoritos.length; indice++){
+        for (let indice = 0; indice < favoritos.length; indice++) {
             //Guardamos en el array cada cancion que encontramos en la api que coincidan los src
             let song = data.find(element => element.filepath === favoritos[indice]);
             cancionesFavoritas.push(song);
@@ -302,9 +302,9 @@ function crearLista(data) {
         botonFav.addEventListener("click", () => {
             let favorito = addFavoritos(cancion.src);
             //Pondremos un icono u otro dependiendo si la estamos añadiendo a favoritos o quitando
-            if(favorito){
+            if (favorito) {
                 i.setAttribute("class", "fas fa-heart");
-            }else{
+            } else {
                 i.setAttribute("class", "far fa-heart");
             }
         })
@@ -418,8 +418,11 @@ document.getElementById("barraVolumen").addEventListener("input", () => {
     cancionActual.volume = event.target.value;
     if (cancionActual.volume === 0) {
         document.getElementById("muteIcon").setAttribute("class", "fas fa-volume-mute");
-    } else if (cancionActual.volume > 0) {
+    } else if (cancionActual.volume > 0 && cancionActual.volume < 0.5) {
         document.getElementById("muteIcon").setAttribute("class", "fas fa-volume-down");
+    } else {
+        document.getElementById("muteIcon").setAttribute("class", "fas fa-volume-up");
+
     }
 })
 
@@ -438,7 +441,7 @@ document.getElementById("btnMute").addEventListener("click", () => {
 document.getElementById("btnLoop").addEventListener("click", () => {
     if (cancionActual.loop) {
         cancionActual.loop = false;
-        event.target.style.color = "white";
+        event.target.style.color = "lightgray";
     } else {
         cancionActual.loop = true;
         event.target.style.color = "#1DB954";
@@ -453,7 +456,7 @@ document.getElementById("btnRandom").addEventListener("click", () => {
         event.target.style.color = "#1DB954";
     } else {
         aleatorio = false;
-        event.target.style.color = "white";
+        event.target.style.color = "lightgray";
     }
 })
 
@@ -469,10 +472,18 @@ document.getElementById("btnFiltros").addEventListener("click", () => {
 
 
 
-
+//FUNCION EN PROGRESO
 document.getElementById("btn-pause").addEventListener("click", () => {
-    cancionActual.pause();
-    document.getElementById("icon-play").setAttribute("class", "fas fa-play");
+    //Si la cancion estaba pausada la reproducimos y cambiamos el icono y viceversa
+    if (cancionActual.paused) {
+        cancionActual.play()
+        document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
+        event.target.value = "Play";
+    } else {
+        cancionActual.pause();
+        document.getElementById("icon-play").setAttribute("class", "fas fa-play");
+        event.target.value = "Pause";
+    }
 })
 document.getElementById("btnFavoritos").addEventListener("click", crearListaFavoritos);
 document.getElementById("btnTodos").addEventListener("click", getCanciones);
