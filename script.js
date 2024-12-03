@@ -14,6 +14,60 @@ document.getElementById("btn-cerrar").addEventListener("click", () => {
 //    event.target.style.display = "none";
 //})
 
+//Obtenemos la imagen de portada comparando las canciones
+async function obtenerImagen(src) {
+    try {
+        const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
+        if (!response.ok) {
+            throw new Error("Error en la solicitud: " + response.statusText);
+        }
+        const data = await response.json();
+        //Buscamos la cancion que coincida con el src de la cancion actual
+        const song = data.find(element => element.filepath === src);
+        if (song) {
+            return song.cover;
+        }
+    } catch (error) {
+        console.error("Error");
+    }
+}
+
+//Obtenemos el titulo de la cancion comparando las canciones
+async function obtenerTitulo(src) {
+    try {
+        const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
+        if (!response.ok) {
+            throw new Error("Error en la solicitud: " + response.statusText);
+        }
+        const data = await response.json();
+        //Buscamos la cancion que coincida con el src de la cancion actual
+        const song = data.find(element => element.filepath === src);
+        if (song) {
+            return song.title;
+        }
+    } catch (error) {
+        console.error("Error");
+    }
+}
+
+//Obtenemos el artista de la cancion comparando las canciones
+async function obtenerArtista(src) {
+    try {
+        const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
+        if (!response.ok) {
+            throw new Error("Error en la solicitud: " + response.statusText);
+        }
+        const data = await response.json();
+        //Buscamos la cancion que coincida con el src de la cancion actual
+        const song = data.find(element => element.filepath === src);
+        if (song) {
+            return song.artist;
+        }
+    } catch (error) {
+        console.error("Error");
+    }
+}
+
 async function postCancion() {
     //Creamos un formData y lo llenamos con los archivos y textos necesarios
     let inputCancion = document.getElementById("inputCancion");
@@ -59,13 +113,14 @@ async function getCanciones() {
     }
 }
 
+//Funcion que formatea los segundos de la cancion a minutos y segundos
 function formatearTiempo(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? '0' + secs : secs}`;
 }
 
-//Funcion que añade el evento ontimeupdate
+//Funcion que actualiza la barra de tiempo
 function addOnTime() {
     //ontimeupdate es un evento que se ejecuta cada vez que cambia el tiempo actual de la cancion
     cancionActual.ontimeupdate = () => {
@@ -130,6 +185,7 @@ let cancionActual;
 //Variable que determina si el modo aleatorio esta activo o no
 let aleatorio = false;
 
+//Funcion que añade una cancion a una lista de favoritos y lo guarda en localStorage
 function addFavoritos(src) {
     //Recuperamos la lista de canciones favoritas de localStorage
     let favoritos = JSON.parse(localStorage.getItem('canciones'));
@@ -156,8 +212,11 @@ function addFavoritos(src) {
     return favorito;
 }
 
+//Funcion que recupera la lista de favoritos de localStorage y lo guarda en un array
 async function crearListaFavoritos(){
+    //Recuperamos la lista de canciones de localStorage
     let favoritos = JSON.parse(localStorage.getItem('canciones'));
+    //Array que almacenara las canciones favoritas
     let cancionesFavoritas = [];
     try {
         const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
@@ -165,7 +224,9 @@ async function crearListaFavoritos(){
             throw new Error("Error en la solicitud: " + response.statusText);
         }
         const data = await response.json();
+        //Recorremos la lista de favoritos del localStorage
         for(let indice = 0; indice < favoritos.length; indice++){
+            //Guardamos en el array cada cancion que encontramos en la api que coincidan los src
             let song = data.find(element => element.filepath === favoritos[indice]);
             cancionesFavoritas.push(song);
         }
@@ -181,7 +242,6 @@ async function crearListaFavoritos(){
 
 //Funcion que rellena la lista de canciones de manera dinamica
 function crearLista(data) {
-
     data.forEach(element => {
         //Creamos un objeto audio por cada cancion que venga de la api
         const cancion = new Audio(element.filepath);
@@ -279,60 +339,6 @@ document.getElementById("btnPlay").addEventListener("click", () => {
         document.getElementById("icon-play").setAttribute("class", "fas fa-play");
     }
 })
-
-//Obtenemos la imagen de portada comparando las canciones
-async function obtenerImagen(src) {
-    try {
-        const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
-        if (!response.ok) {
-            throw new Error("Error en la solicitud: " + response.statusText);
-        }
-        const data = await response.json();
-        //Buscamos la cancion que coincida con el src de la cancion actual
-        const song = data.find(element => element.filepath === src);
-        if (song) {
-            return song.cover;
-        }
-    } catch (error) {
-        console.error("Error");
-    }
-}
-
-//Obtenemos el titulo de la cancion comparando las canciones
-async function obtenerTitulo(src) {
-    try {
-        const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
-        if (!response.ok) {
-            throw new Error("Error en la solicitud: " + response.statusText);
-        }
-        const data = await response.json();
-        //Buscamos la cancion que coincida con el src de la cancion actual
-        const song = data.find(element => element.filepath === src);
-        if (song) {
-            return song.title;
-        }
-    } catch (error) {
-        console.error("Error");
-    }
-}
-
-//Obtenemos el artista de la cancion comparando las canciones
-async function obtenerArtista(src) {
-    try {
-        const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
-        if (!response.ok) {
-            throw new Error("Error en la solicitud: " + response.statusText);
-        }
-        const data = await response.json();
-        //Buscamos la cancion que coincida con el src de la cancion actual
-        const song = data.find(element => element.filepath === src);
-        if (song) {
-            return song.artist;
-        }
-    } catch (error) {
-        console.error("Error");
-    }
-}
 
 //Funcion que para la cancion que se esta reproduciendo y reproduce la siguiente en el array
 //Esta funcion tiene que ser asincrona porque llamamos a obtener imagen que tambien es asincrona
@@ -471,5 +477,7 @@ document.getElementById("btn-pause").addEventListener("click", () => {
 document.getElementById("btnFavoritos").addEventListener("click", crearListaFavoritos);
 document.getElementById("btnTodos").addEventListener("click", getCanciones);
 document.getElementById("subir").addEventListener("click", postCancion);
+
+//Mostramos la lista de canciones cuando abrimos la aplicacion
 getCanciones();
 
