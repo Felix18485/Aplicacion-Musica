@@ -292,3 +292,52 @@ body {
 #form-container .subir:hover {
     background-color: #1ed760;
 }
+
+.acordeon{
+    display: none;
+}
+
+.filtros{
+    display: block;
+}
+
+.btn-filtros{
+    width: 100%;
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+    color: lightgray;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: color 0.3s;
+    background-color: #121212;
+    border: none;
+    
+}
+
+.btn-filtros:hover{
+    background-color: #404040;
+}
+
+.acordeon{
+    flex-direction: column;
+    background-color: #121212;
+    padding: 10px 15px;
+    gap: 10px;
+}
+
+.acordeon button{
+    color: lightgray;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+    text-align: left;
+    background-color: #121212;
+    border: none;
+    cursor: pointer;
+}
+
+.acordeon button:hover{
+    background-color: #404040;
+}
+

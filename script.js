@@ -35,7 +35,6 @@ async function postCancion() {
         if (!response.ok) {
             throw new Error("Error en la solicitud: " + response.statusText);
         }
-        console.log("exito");
         //Ocultamos el formulario al subir un archivo
         document.getElementById("form-container").style.display = "none";
     } catch (error) {
@@ -50,7 +49,9 @@ async function getCanciones() {
             throw new Error("Error en la solicitud: " + response.statusText);
         }
         const data = await response.json();
-        console.log(data);
+        //Limpiamos el contenedor de la tabla
+        document.getElementById("tbody").innerHTML = "";
+        //Creamos la lista con todas las canciones
         crearLista(data);
 
     } catch (error) {
@@ -129,6 +130,55 @@ let cancionActual;
 //Variable que determina si el modo aleatorio esta activo o no
 let aleatorio = false;
 
+function addFavoritos(src) {
+    //Recuperamos la lista de canciones favoritas de localStorage
+    let favoritos = JSON.parse(localStorage.getItem('canciones'));
+    //Si la lista de favoritos esta vacia la inicializamos
+    if (favoritos === null) {
+        favoritos = [];
+    }
+
+    //Booleano que utilizaremos para poner un icono u otro
+    let favorito = false;
+    //Guardamos la cancion en favoritos si no estaba ya
+    if (!favoritos.includes(src)) {
+        favoritos.push(src);
+        localStorage.setItem("canciones", JSON.stringify(favoritos));
+        favorito = true;
+    }else{
+        //Buscamos el indice que tiene la cancion en la lista
+        let indice = favoritos.findIndex(cancion => cancion === src);
+        //Elminimaos la cancion del array
+        favoritos.splice(indice, 1);
+        //Volvemos a subir el array sin la cancion
+        localStorage.setItem("canciones", JSON.stringify(favoritos));
+    }
+    return favorito;
+}
+
+async function crearListaFavoritos(){
+    let favoritos = JSON.parse(localStorage.getItem('canciones'));
+    let cancionesFavoritas = [];
+    try {
+        const response = await fetch("http://informatica.iesalbarregas.com:7008/songs");
+        if (!response.ok) {
+            throw new Error("Error en la solicitud: " + response.statusText);
+        }
+        const data = await response.json();
+        for(let indice = 0; indice < favoritos.length; indice++){
+            let song = data.find(element => element.filepath === favoritos[indice]);
+            cancionesFavoritas.push(song);
+        }
+        //Limpiamos la tabla de canciones
+        document.getElementById("tbody").innerHTML = "";
+        //Mostramos las canciones favoritas
+        crearLista(cancionesFavoritas);
+    } catch (error) {
+        console.error("Error");
+    }
+}
+
+
 //Funcion que rellena la lista de canciones de manera dinamica
 function crearLista(data) {
 
@@ -180,8 +230,24 @@ function crearLista(data) {
         let botonFav = document.createElement("button");
         botonFav.setAttribute("class", "fav");
         let i = document.createElement("i");
-        i.setAttribute("class", "far fa-heart");
+        //Recuperamos la lista de canciones favoritos
+        let favoritos = JSON.parse(localStorage.getItem('canciones'));
+        //En el caso de que la cancion este como favorito ponemos el icono del corazon relleno
+        if (!favoritos.includes(cancion.src)) {
+            i.setAttribute("class", "far fa-heart");
+        } else {
+            i.setAttribute("class", "fas fa-heart");
+        }
         botonFav.append(i);
+        botonFav.addEventListener("click", () => {
+            let favorito = addFavoritos(cancion.src);
+            //Pondremos un icono u otro dependiendo si la estamos añadiendo a favoritos o quitando
+            if(favorito){
+                i.setAttribute("class", "fas fa-heart");
+            }else{
+                i.setAttribute("class", "far fa-heart");
+            }
+        })
 
         tdPlay.append(botonPlay);
         tdTitulo.textContent = element.title;
@@ -200,7 +266,6 @@ function crearLista(data) {
 
         tr.append(tdPlay, tdTitulo, tdArtista, tdDuracion, tdFavorito);
         tbody.append(tr);
-
     });
 }
 document.getElementById("btnPlay").addEventListener("click", () => {
@@ -223,7 +288,6 @@ async function obtenerImagen(src) {
             throw new Error("Error en la solicitud: " + response.statusText);
         }
         const data = await response.json();
-        console.log(data);
         //Buscamos la cancion que coincida con el src de la cancion actual
         const song = data.find(element => element.filepath === src);
         if (song) {
@@ -242,7 +306,6 @@ async function obtenerTitulo(src) {
             throw new Error("Error en la solicitud: " + response.statusText);
         }
         const data = await response.json();
-        console.log(data);
         //Buscamos la cancion que coincida con el src de la cancion actual
         const song = data.find(element => element.filepath === src);
         if (song) {
@@ -261,7 +324,6 @@ async function obtenerArtista(src) {
             throw new Error("Error en la solicitud: " + response.statusText);
         }
         const data = await response.json();
-        console.log(data);
         //Buscamos la cancion que coincida con el src de la cancion actual
         const song = data.find(element => element.filepath === src);
         if (song) {
@@ -377,7 +439,7 @@ document.getElementById("btnLoop").addEventListener("click", () => {
     }
 })
 
-//FUNCION EN PROGRESO
+//Evento que pone las canciones en aleatorio
 document.getElementById("btnRandom").addEventListener("click", () => {
     //Saca un numero aleatorio entre 0 y la cantidad de canciones
     if (aleatorio === false) {
@@ -389,6 +451,25 @@ document.getElementById("btnRandom").addEventListener("click", () => {
     }
 })
 
+
+
+document.getElementById("btnFiltros").addEventListener("click", () => {
+    if (window.getComputedStyle(acordeon).display === "none") {
+        document.getElementById("acordeon").style.display = "flex";
+    } else {
+        document.getElementById("acordeon").style.display = "none";
+    }
+})
+
+
+
+
+document.getElementById("btn-pause").addEventListener("click", () => {
+    cancionActual.pause();
+    document.getElementById("icon-play").setAttribute("class", "fas fa-play");
+})
+document.getElementById("btnFavoritos").addEventListener("click", crearListaFavoritos);
+document.getElementById("btnTodos").addEventListener("click", getCanciones);
 document.getElementById("subir").addEventListener("click", postCancion);
 getCanciones();
 
