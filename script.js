@@ -94,8 +94,12 @@ async function postCancion() {
         if (!response.ok) {
             throw new Error("Error en la solicitud: " + response.statusText);
         }
-        //Ocultamos el formulario al subir un archivo
+        //Ocultamos el formulario al subir un archivo y vaciamos los campos
         document.getElementById("form-container").style.display = "none";
+        inputCancion.value = "";
+        inputTitulo.value = "";
+        inputArtista.value = "";
+        inputPortada.value = "";
     } catch (error) {
         console.error(error);
     }
