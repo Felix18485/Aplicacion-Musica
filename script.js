@@ -270,6 +270,7 @@ function crearLista(data) {
             cancionActual.volume = document.getElementById("barraVolumen").value;
             //Cambiamos el icono de la barra de reproduccion y ponemos la imagen de portada
             document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
+            document.getElementById("btn-pause").value = "Pause";
             document.getElementById("portada").innerHTML = "";
             let portada = document.createElement("img");
             portada.src = element.cover;
@@ -334,9 +335,11 @@ document.getElementById("btnPlay").addEventListener("click", () => {
     if (cancionActual.paused) {
         cancionActual.play()
         document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
+        document.getElementById("btn-pause").value = "Pause";
     } else {
         cancionActual.pause();
         document.getElementById("icon-play").setAttribute("class", "fas fa-play");
+        document.getElementById("btn-pause").value = "Play";
     }
 })
 
@@ -472,17 +475,17 @@ document.getElementById("btnFiltros").addEventListener("click", () => {
 
 
 
-//FUNCION EN PROGRESO
-document.getElementById("btn-pause").addEventListener("click", () => {
+//Funcion que añade funcionalidad al boton de pause de la esquina superior derecha
+document.getElementById("btn-pause").addEventListener("click", (event) => {
     //Si la cancion estaba pausada la reproducimos y cambiamos el icono y viceversa
     if (cancionActual.paused) {
         cancionActual.play()
         document.getElementById("icon-play").setAttribute("class", "fas fa-pause");
-        event.target.value = "Play";
+        event.target.value = "Pause";
     } else {
         cancionActual.pause();
         document.getElementById("icon-play").setAttribute("class", "fas fa-play");
-        event.target.value = "Pause";
+        event.target.value = "Play";
     }
 })
 

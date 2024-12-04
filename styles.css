@@ -354,3 +354,21 @@ body {
     background-color: #404040;
 }
 
+@media (max-width: 768px){
+    #container {
+        display: grid;
+        grid-template-areas:
+            "filtros"
+            "portada"
+            "lista"
+            "barra";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        height: 100vh;
+    }
+    #informacion{
+        display: none;
+    }
+    
+}
+
