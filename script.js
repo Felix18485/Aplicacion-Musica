@@ -74,6 +74,7 @@ async function obtenerArtista(src) {
 }
 
 async function postCancion() {
+    document.getElementById("carga").style.display = "flex";
     //Creamos un formData y lo llenamos con los archivos y textos necesarios
     let inputCancion = document.getElementById("inputCancion");
     let inputTitulo = document.getElementById("inputTitulo");
@@ -103,6 +104,7 @@ async function postCancion() {
     } catch (error) {
         console.error(error);
     }
+    document.getElementById("carga").style.display = "none";
 }
 
 async function getCanciones() {
