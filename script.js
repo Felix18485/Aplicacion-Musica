@@ -497,6 +497,33 @@ document.getElementById("barraProgreso").addEventListener("input", (event) => {
 document.getElementById("btnFavoritos").addEventListener("click", crearListaFavoritos);
 document.getElementById("btnTodos").addEventListener("click", getCanciones);
 document.getElementById("subir").addEventListener("click", postCancion);
+document.getElementById("inputTitulo").addEventListener("input", (event) => {
+    //Expresion regular que solo permite entre 1 y 20 letras
+    let regex = /^[a-zA-ZñÑ ]{1,20}$/;
+    if (!regex.test(event.target.value)) {
+        alert("El titulo no puede tener mas de 20 caracteres");
+        //En el caso de que hay mas de 20 caracteres se elimina el ultimo caracter
+        //y se actualiza el valor del input
+        let inputModificado = event.target.value.substring(0, event.target.value.length - 1);
+        event.target.value = inputModificado;
+    }
+    //Se iguala el valor del label con el del input
+    label.textContent = inputTitulo.value;
+})
+
+document.getElementById("inputAutor").addEventListener("input", (event) => {
+    //Expresion regular que solo permite entre 1 y 20 letras
+    let regex = /^[a-zA-ZñÑ ]{1,20}$/;
+    if (!regex.test(event.target.value)) {
+        alert("El titulo no puede tener mas de 20 caracteres");
+        //En el caso de que hay mas de 20 caracteres se elimina el ultimo caracter
+        //y se actualiza el valor del input
+        let inputModificado = event.target.value.substring(0, event.target.value.length - 1);
+        event.target.value = inputModificado;
+    }
+    //Se iguala el valor del label con el del input
+    label.textContent = inputTitulo.value;
+})
 
 //Mostramos la lista de canciones cuando abrimos la aplicacion
 getCanciones();
