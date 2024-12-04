@@ -1,5 +1,7 @@
 //Evento que se encarga de mostrar el formulario y ponerle el foco al pulsar el boton añadir
-document.getElementById("add").addEventListener("click", () => {
+document.getElementById("add").addEventListener("click", (event) => {
+    // Detiene la propagación del clic en el botón "add" para evitar que cierre el modal
+    event.stopPropagation();
     document.getElementById("form-container").style.display = "flex";
     document.getElementById("form-container").focus();
 })
@@ -9,10 +11,13 @@ document.getElementById("btn-cerrar").addEventListener("click", () => {
     document.getElementById("form-container").style.display = "none";
 })
 
-//Evento que se encarga de ocultar el formulario al clickar fuera del formulario
-//document.getElementById("form-container").addEventListener("blur", (event) => {
-//    event.target.style.display = "none";
-//})
+document.addEventListener("click", (event) => {
+    const formContainer = document.getElementById("form-container");
+    // Si el clic ocurre fuera del modal (form-container) y fuera de su formulario, lo cerramos
+    if (!formContainer.contains(event.target) && event.target !== document.getElementById("add")) {
+        formContainer.style.display = "none";
+    }
+});
 
 //Obtenemos la imagen de portada comparando las canciones
 async function obtenerImagen(src) {
