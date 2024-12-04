@@ -129,7 +129,7 @@ function formatearTiempo(seconds) {
     return `${mins}:${secs < 10 ? '0' + secs : secs}`;
 }
 
-//Funcion que actualiza la barra de tiempo
+//Funcion que actualiza la barra de tiempo y utiliza el evento OnTime
 function addOnTime() {
     //ontimeupdate es un evento que se ejecuta cada vez que cambia el tiempo actual de la cancion
     cancionActual.ontimeupdate = () => {
