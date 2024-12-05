@@ -120,7 +120,7 @@ async function getCanciones() {
         crearLista(data);
 
     } catch (error) {
-        console.error("Error");
+        console.error("Error", error.message);
     }
 }
 
@@ -304,6 +304,10 @@ function crearLista(data) {
         let i = document.createElement("i");
         //Recuperamos la lista de canciones favoritos
         let favoritos = JSON.parse(localStorage.getItem('canciones'));
+        //Si es nula la inicializamos como array vacio
+        if(favoritos === null){
+            favoritos = [];
+        }
         //En el caso de que la cancion este como favorito ponemos el icono del corazon relleno
         if (!favoritos.includes(cancion.src)) {
             i.setAttribute("class", "far fa-heart");
