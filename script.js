@@ -2,20 +2,20 @@
 document.getElementById("add").addEventListener("click", (event) => {
     // Detiene la propagación del clic en el botón "add" para evitar que cierre el modal
     event.stopPropagation();
-    document.getElementById("form-container").style.display = "flex";
+    document.getElementById("form-container").classList.add("mostrar");
     document.getElementById("form-container").focus();
 })
 
 //Evento que se encarga de ocultar el formulario al hacer click en cerrar
 document.getElementById("btn-cerrar").addEventListener("click", () => {
-    document.getElementById("form-container").style.display = "none";
+    document.getElementById("form-container").classList.remove("mostrar");
 })
 
 document.addEventListener("click", (event) => {
     const formContainer = document.getElementById("form-container");
     // Si el clic ocurre fuera del modal (form-container) y fuera de su formulario, lo cerramos
     if (!formContainer.contains(event.target) && event.target !== document.getElementById("add")) {
-        formContainer.style.display = "none";
+        document.getElementById("form-container").classList.remove("mostrar");
     }
 });
 
