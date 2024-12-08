@@ -389,6 +389,15 @@ body {
     #informacion{
         display: none;
     }
+
+    .tabla{
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .tabla td, .tabla th{
+        word-wrap: break-word;
+    }
     
 }
 
